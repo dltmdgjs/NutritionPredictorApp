@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.seunghun.nutritionpredictorapp.ContactsDBHelper;
 import com.seunghun.nutritionpredictorapp.databinding.FragmentUserBinding;
 
+// 사용자 정보 입력 및 저장을 위한 Fragment
 public class UserFragment extends Fragment {
 
     ContactsDBHelper mHelper;

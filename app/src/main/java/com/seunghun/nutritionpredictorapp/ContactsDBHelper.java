@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+
+// DBHelper 클래스
 public class ContactsDBHelper extends SQLiteOpenHelper {
 
     public ContactsDBHelper (Context context, String name, int version) {
