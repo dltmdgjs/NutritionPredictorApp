@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,7 @@ public class UserFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        UserViewModel dashboardViewModel =
+        UserViewModel userViewModel =
                 new ViewModelProvider(this).get(UserViewModel.class);
 
         binding = FragmentUserBinding.inflate(inflater, container, false);
@@ -47,7 +48,7 @@ public class UserFragment extends Fragment {
         // 1. 화면 로드 시 데이터 조회 및 표시
         loadData();
 
-        // 저장 버튼 리스너 설정
+        /** 저장 버튼 리스너 설정 */
         Button btSave = binding.btSave;
         btSave.setOnClickListener(v -> {
             String name = etName.getText().toString();
@@ -63,6 +64,19 @@ public class UserFragment extends Fragment {
             // 2. 데이터 저장 또는 업데이트 로직 실행
             saveOrUpdateData(name, age, height, weight);
         });
+
+        /** 이미지 클릭 시 사진첩 접근해 이미지 변경하기 */
+        ImageView imageView = binding.imageView;
+        imageView.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "사진첩 접근", Toast.LENGTH_SHORT).show();
+            //TODO: 사진첩 접근 로직 구현
+            // 1. 사용자에 갤러리 접근 요청
+            // 2. 갤러리에서 사진 선택. (결과는 onActivityResult로 받음)
+            // 3. 선택한 사진을 ImageView에 표시
+            // 4. 선택한 사진의 정보를 DB에 저장
+        });
+
+
 
         return root;
     }
