@@ -13,6 +13,11 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        // TFLite용 (중요)
+        ndk {
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -32,6 +37,11 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    // TFLite 메모리 매핑 안정화
+    androidResources {
+        noCompress += setOf("tflite")
+    }
 }
 
 dependencies {
@@ -46,4 +56,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // TensorFlow Lite (필수)
+    implementation("org.tensorflow:tensorflow-lite:2.14.0")
+    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
+    implementation("org.tensorflow:tensorflow-lite-gpu:2.16.1")
+    implementation("org.tensorflow:tensorflow-lite-select-tf-ops:2.14.0")
 }
