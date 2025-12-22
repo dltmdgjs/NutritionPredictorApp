@@ -37,12 +37,16 @@ public class FoodClassifier {
     // ===============================
     // 추론 함수 (Bitmap → class index)
     // ===============================
+
     public int predict(Bitmap bitmap) {
+
+        // 1) 리사이즈만 하고, 정규화(나누기 255 / -1~1)는 하지 않습니다.
         ImageProcessor imageProcessor = new ImageProcessor.Builder()
                 .add(new ResizeOp(IMG_SIZE, IMG_SIZE, ResizeOp.ResizeMethod.BILINEAR))
-                .add(new NormalizeOp(127.5f, 127.5f))
+                // .add(new NormalizeOp(...))  // 절대 넣지 마세요 (raw255 모델)
                 .build();
 
+        // 2) 모델 입력: FLOAT32, 값 범위는 0~255
         TensorImage tensorImage = new TensorImage(DataType.FLOAT32);
         tensorImage.load(bitmap);
         tensorImage = imageProcessor.process(tensorImage);
@@ -52,15 +56,13 @@ public class FoodClassifier {
                 DataType.FLOAT32
         );
 
-        // 4. 모델 추론 실행
         if (interpreter != null) {
             interpreter.run(tensorImage.getBuffer(), outputBuffer.getBuffer().rewind());
         }
 
-        // 5. 결과 후처리 (가장 높은 확률을 가진 인덱스 찾기)
         float[] probabilities = outputBuffer.getFloatArray();
         int maxIndex = -1;
-        float maxProb = 0.0f;
+        float maxProb = -1f;
         for (int i = 0; i < probabilities.length; i++) {
             if (probabilities[i] > maxProb) {
                 maxProb = probabilities[i];
@@ -68,13 +70,9 @@ public class FoodClassifier {
             }
         }
 
-        // 실제 모델이 어떤 값을 출력하는지 로그로 확인!
         Log.d("FoodClassifier", "Max Probability: " + maxProb + " at Index: " + maxIndex);
-
         return maxIndex;
-
     }
-
 
     // ===============================
     // TFLite 옵션 (CPU only)
@@ -92,18 +90,18 @@ public class FoodClassifier {
 
         FileInputStream fis = new FileInputStream(
                 context.getAssets()
-                        .openFd("mobilenetv3_food101_fp32.tflite")
+                        .openFd("food101_mnv3large_fp32.tflite")
                         .getFileDescriptor()
         );
 
         FileChannel channel = fis.getChannel();
 
         long startOffset = context.getAssets()
-                .openFd("mobilenetv3_food101_fp32.tflite")
+                .openFd("food101_mnv3large_fp32.tflite")
                 .getStartOffset();
 
         long declaredLength = context.getAssets()
-                .openFd("mobilenetv3_food101_fp32.tflite")
+                .openFd("food101_mnv3large_fp32.tflite")
                 .getDeclaredLength();
 
         return channel.map(
