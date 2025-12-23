@@ -8,15 +8,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -27,17 +25,21 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.seunghun.nutritionpredictorapp.R;
-import com.seunghun.nutritionpredictorapp.data.NutritionRepository;
+import com.seunghun.nutritionpredictorapp.data.LabelLoader;
+import com.seunghun.nutritionpredictorapp.data.NutritionCalculator;
 import com.seunghun.nutritionpredictorapp.databinding.FragmentHomeBinding;
 import com.seunghun.nutritionpredictorapp.ml.FoodClassifier;
 
 import java.io.IOException;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private FoodClassifier foodClassifier;
     private Bitmap testBitmap;
     private Bitmap selectedBitmap;
+    private List<String> labels;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +52,10 @@ public class HomeFragment extends Fragment {
         // 모델 로드
         foodClassifier = new FoodClassifier(requireContext());
 
+        // 라벨 로드
+        labels = LabelLoader.loadLabels(requireContext(), "labels.txt");
+
+
         // 테스트 이미지 표시
         testBitmap = BitmapFactory.decodeResource(
                 getResources(),
@@ -57,6 +63,8 @@ public class HomeFragment extends Fragment {
         );
         binding.ivFood.setImageBitmap(testBitmap);
 
+
+        // 음식 이미지 클릭 이벤트 리스너
         /** 이미지 클릭 시 카메라 접근해 이미지 변경하기 */
         binding.ivFood.setOnClickListener(v -> {
             Toast.makeText(getContext(), "카메라 접근", Toast.LENGTH_SHORT).show();
@@ -69,35 +77,68 @@ public class HomeFragment extends Fragment {
             showImagePickerDialog();
         });
 
-        /** 영양정보 보기 버튼 리스너 설정 */
+
+        // 영양정보 보기 버튼 클릭 이벤트 리스너
+        /** 영양정보 보기 버튼 클릭 시, 예측 후 영양정보 창 전개 */
         binding.btPredict.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "영양정보 보기", Toast.LENGTH_SHORT).show();
-            //TODO: 영양 정보 예측 창 전개
-            // 1. 예측 로직 구현
+            // TODO: 예측 로직 구현
             //      - 파이썬 연동(모델 로드 및 예측 성공, FoodClassifier.java)
-            //      - 음식 DB 연동(해야함, NutritionRepository.java)
-            // 일단 모델을 불러와 예측해, 클래스 인덱스를 도출하는 것까지 진행됨.
-            // 다음으로는 인덱스를 음식명으로 전환하고, 이를 통해 영양성분을 얻어 띄우는 것을 해야함.
+            //      - index -> label -> 영양정보 매핑(LabelLoader.java, NutritionCalculator.java)
+            //TODO: 영양 정보 예측 창 전개 (현재 HomeFragment에 그대로 띄우기만 하고 있음)
+            //      - 대안 : HomeFragment에 그대로 띄우되, 예측 성공 시 저장 버튼이 띄워지도록 함.
 
             // ------------------------------------------
+            // 이미지, 중량
             ImageView imageView = binding.ivFood;
+            EditText editText = binding.etFweight;
+            int gram;
 
+            // 이미지 널체크
             if (imageView.getDrawable() == null) {
                 Toast.makeText(getContext(), "이미지가 없습니다", Toast.LENGTH_SHORT).show();
                 return;
             }
+            // 중량 널체크
+            if (editText.getText().toString().isEmpty()) {
+                Toast.makeText(getContext(), "중량을 입력해주세요", Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                gram = Integer.parseInt(editText.getText().toString());
+            }
 
             try {
-                // 🔥 ImageView → Bitmap 변환
+                // ImageView → Bitmap 변환
                 Bitmap bitmap = drawableToBitmap(imageView.getDrawable());
 
+                // 예측 -> 결과 인덱스 반환
                 int predictedIndex = foodClassifier.predict(bitmap);
+//                Toast.makeText(getContext(), "예측 결과 클래스 인덱스: " + predictedIndex, Toast.LENGTH_LONG).show();
 
-                Toast.makeText(
-                        getContext(),
-                        "예측 결과 클래스 인덱스: " + predictedIndex,
-                        Toast.LENGTH_LONG
-                ).show();
+                // 인덱스 -> 라벨(음식명) 매핑
+                String label = labels.get(predictedIndex);
+                Toast.makeText(getContext(), "음식명: " + label, Toast.LENGTH_SHORT).show();
+
+                // 라벨(음식명) -> 영양정보 매핑(계산)
+                NutritionCalculator calc = NutritionCalculator.fromAssets(requireContext(), "nutrition.csv");
+                NutritionCalculator.NutritionInfo info = calc.getNutrition(label, gram);
+
+                if (info == null) {
+                    Toast.makeText(getContext(), "영양정보 매칭 실패", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "영양정보 매칭 성공", Toast.LENGTH_SHORT).show();
+                    // tv_result에 매칭된 영양정보 표시.
+                    binding.tvResult.setText(
+                            "음식명: " + label + "\n" +
+                            "중량: " + info.weight + "g\n" +
+                            "칼로리: " + info.calories + "kcal\n" +
+                            "단백질: " + info.protein + "g\n" +
+                            "탄수화물: " + info.carbohydrates + "g\n" +
+                            "지방: " + info.fats + "g\n" +
+                            "식이섬유: " + info.fiber + "g\n" +
+                            "당류: " + info.sugars + "g\n" +
+                            "나트륨: " + info.sodium + "mg"
+                    );
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -108,10 +149,12 @@ public class HomeFragment extends Fragment {
                 ).show();
             }
         });
+
+
         return root;
     }
 
-    // 이미지뷰를 비트맵으로 변환
+    // 이미지 뷰를 비트맵으로 변환
     private Bitmap drawableToBitmap(Drawable drawable) {
 
         if (drawable instanceof BitmapDrawable) {
