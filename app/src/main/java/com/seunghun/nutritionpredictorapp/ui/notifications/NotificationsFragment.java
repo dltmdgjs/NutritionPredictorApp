@@ -98,6 +98,8 @@ public class NotificationsFragment extends Fragment {
 
             binding.tvLoadInfo.setText(str);
             binding.tvFoodIntake.append(foods);
+            binding.tvFoodIntake.setVisibility(View.VISIBLE);
+            binding.textView4.setVisibility(View.VISIBLE);
 
         } else {
             Toast.makeText(getContext(), "섭취 기록이 없습니다.", Toast.LENGTH_SHORT).show();
