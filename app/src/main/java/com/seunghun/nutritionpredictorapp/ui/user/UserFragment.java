@@ -16,17 +16,17 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.seunghun.nutritionpredictorapp.ContactsDBHelper;
+import com.seunghun.nutritionpredictorapp.UserInfoDBHelper;
 import com.seunghun.nutritionpredictorapp.databinding.FragmentUserBinding;
 
 // 사용자 정보 입력 및 저장을 위한 Fragment.
 public class UserFragment extends Fragment {
-
-    ContactsDBHelper mHelper;
-    static final String mFILENAME = "myInfo.db";
     private FragmentUserBinding binding;
+    UserInfoDBHelper mHelper;
+    static final String mFILENAME = "myInfo.db";
 
     private EditText etName, etAge, etHeight, etWeight;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class UserFragment extends Fragment {
         etWeight = binding.etWeight;
 
         // DBHelper 초기화
-        mHelper = new ContactsDBHelper(getContext(), mFILENAME, null, 1);
+        mHelper = new UserInfoDBHelper(getContext(), mFILENAME, null, 1);
 
         // 1. 화면 로드 시 데이터 조회 및 표시
         loadData();
@@ -62,12 +62,11 @@ public class UserFragment extends Fragment {
             }
 
             // 2. 데이터 저장 또는 업데이트 로직 실행
-            saveOrUpdateData(name, age, height, weight);
+            saveOrUpdateProfile(name, age, height, weight);
         });
 
-        /** 이미지 클릭 시 사진첩 접근해 이미지 변경하기 */
-        ImageView imageView = binding.imageView;
-        imageView.setOnClickListener(v -> {
+        /** 프로필 이미지 클릭 시 사진첩 접근해 이미지 변경하기 */
+        binding.ivProfile.setOnClickListener(v -> {
             Toast.makeText(getContext(), "사진첩 접근", Toast.LENGTH_SHORT).show();
             //TODO: 사진첩 접근 로직 구현
             // 1. 사용자에 갤러리 접근 요청
@@ -75,8 +74,6 @@ public class UserFragment extends Fragment {
             // 3. 선택한 사진을 ImageView에 표시
             // 4. 선택한 사진의 정보를 DB에 저장
         });
-
-
 
         return root;
     }
@@ -107,7 +104,7 @@ public class UserFragment extends Fragment {
      * 데이터 존재 여부에 따라 정보를 저장(INSERT)하거나 업데이트(UPDATE)합니다.
      * 안전한 ContentValues를 사용하여 SQL Injection을 방지합니다.
      */
-    private void saveOrUpdateData(String name, String age, String height, String weight) {
+    private void saveOrUpdateProfile(String name, String age, String height, String weight) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("name", name);

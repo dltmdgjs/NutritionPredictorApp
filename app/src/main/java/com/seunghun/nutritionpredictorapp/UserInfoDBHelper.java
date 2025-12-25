@@ -3,18 +3,16 @@ package com.seunghun.nutritionpredictorapp;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 
 // DBHelper 클래스
-public class ContactsDBHelper extends SQLiteOpenHelper {
+public class UserInfoDBHelper extends SQLiteOpenHelper {
 
-    public ContactsDBHelper (Context context, String name, int version) {
+    public UserInfoDBHelper(Context context, String name, int version) {
         this(context, name, null, version);
-
     }
 
-    public ContactsDBHelper (Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public UserInfoDBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
     }
 
