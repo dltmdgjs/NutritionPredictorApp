@@ -61,6 +61,7 @@ public class NotificationsFragment extends Fragment {
 
         if (cursor.moveToFirst()) {
             Toast.makeText(getContext(), "섭취 기록이 있습니다.", Toast.LENGTH_SHORT).show();
+            String foods = "";
             int gram = 0;
             int calories = 0;
             int protein = 0;
@@ -73,7 +74,7 @@ public class NotificationsFragment extends Fragment {
             int i = cursor.getCount();
             for (int j = 0; j < i; j++) {
                 String food = cursor.getString(cursor.getColumnIndexOrThrow("food"));
-                binding.tvFoodIntake.append( "\n" + food);
+                foods += "\n" + food;
                 gram += cursor.getInt(cursor.getColumnIndexOrThrow("gram"));
                 calories += cursor.getInt(cursor.getColumnIndexOrThrow("calories"));
                 protein += cursor.getInt(cursor.getColumnIndexOrThrow("protein"));
@@ -94,7 +95,9 @@ public class NotificationsFragment extends Fragment {
             str += "당류: " + sugars + "g\n";
             str += "나트륨: " + sodium + "mg\n";
 
+
             binding.tvLoadInfo.setText(str);
+            binding.tvFoodIntake.append(foods);
 
         } else {
             Toast.makeText(getContext(), "섭취 기록이 없습니다.", Toast.LENGTH_SHORT).show();
