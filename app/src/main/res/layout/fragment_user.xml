@@ -27,6 +27,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:weightSum="10">
 
         <TextView
@@ -55,6 +56,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:weightSum="10">
 
         <TextView
@@ -83,6 +85,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:weightSum="10">
 
         <TextView
@@ -111,6 +114,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:weightSum="10">
 
         <TextView
@@ -129,6 +133,47 @@
             android:ems="10"
             android:hint="몸무게를 입력하세요."
             android:inputType="number" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:weightSum="10">
+
+        <TextView
+            android:id="@+id/tv_gender"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="성별"
+            android:textSize="20sp" />
+
+        <RadioGroup
+            android:id="@+id/rg_gender"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_man"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="남" />
+
+            <RadioButton
+                android:id="@+id/rb_woman"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="여" />
+        </RadioGroup>
     </LinearLayout>
 
     <Button

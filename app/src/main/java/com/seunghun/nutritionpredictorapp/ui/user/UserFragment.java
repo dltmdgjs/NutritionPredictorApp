@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -26,6 +27,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.seunghun.nutritionpredictorapp.R;
 import com.seunghun.nutritionpredictorapp.UserInfoDBHelper;
 import com.seunghun.nutritionpredictorapp.databinding.FragmentUserBinding;
 
@@ -41,7 +43,8 @@ public class UserFragment extends Fragment {
     static final String mFILENAME = "myInfo.db";
 
     private EditText etName, etAge, etHeight, etWeight;
-    private Bitmap selectedBitmap;
+    private String gender = "남";
+    private Bitmap selectedBitmap = null;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -58,6 +61,7 @@ public class UserFragment extends Fragment {
         etHeight = binding.etHeight;
         etWeight = binding.etWeight;
 
+
         // DBHelper 초기화
         mHelper = new UserInfoDBHelper(getContext(), mFILENAME, null, 1);
 
@@ -65,9 +69,25 @@ public class UserFragment extends Fragment {
         restoreProfileImage(); // 프로필 이미지 로드
         loadData(); // 신체정보 데이터 로드
 
+        /** 프로필 이미지 클릭 시 사진첩 접근해 이미지 변경하기 */
+        binding.ivProfile.setOnClickListener(v -> {
+            showImagePickerDialog(); // selectedBitmap 업데이트
+        });
+
+        /** 성별 라디오 버튼 */
+        binding.rgGender.setOnCheckedChangeListener((group, checkedId)->
+                {
+                    if (checkedId == binding.rbMan.getId()) {
+                        gender = "남";
+                    }
+                    else if (checkedId == binding.rbWoman.getId()) {
+                        gender = "여";
+                    }
+                }
+        );
+
         /** 저장 버튼 리스너 설정 */
-        Button btSave = binding.btSave;
-        btSave.setOnClickListener(v -> {
+        binding.btSave.setOnClickListener(v -> {
             String name = etName.getText().toString();
             String age = etAge.getText().toString();
             String height = etHeight.getText().toString();
@@ -79,12 +99,7 @@ public class UserFragment extends Fragment {
             }
 
             // 2. 데이터 저장 또는 업데이트 로직 실행
-            saveOrUpdateProfile(name, age, height, weight);
-        });
-
-        /** 프로필 이미지 클릭 시 사진첩 접근해 이미지 변경하기 */
-        binding.ivProfile.setOnClickListener(v -> {
-            showImagePickerDialog(); // selectedBitmap 업데이트
+            saveOrUpdateProfile(name, age, height, weight, gender);
         });
 
         return root;
@@ -96,7 +111,7 @@ public class UserFragment extends Fragment {
      */
     private void loadData() {
         SQLiteDatabase db = mHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT name, age, height, weight FROM myinfo", null);
+        Cursor cursor = db.rawQuery("SELECT name, age, height, weight, gender FROM myinfo", null);
 
         // moveToFirst()는 커서를 첫 번째 행으로 이동시키며, 데이터가 있으면 true를 반환합니다.
         if (cursor.moveToFirst()) {
@@ -105,6 +120,12 @@ public class UserFragment extends Fragment {
             etAge.setText(cursor.getString(cursor.getColumnIndexOrThrow("age")));
             etHeight.setText(cursor.getString(cursor.getColumnIndexOrThrow("height")));
             etWeight.setText(cursor.getString(cursor.getColumnIndexOrThrow("weight")));
+            gender = cursor.getString(cursor.getColumnIndexOrThrow("gender"));
+            if (gender.equals("남")) {
+                binding.rbMan.setChecked(true);
+            } else {
+                binding.rbWoman.setChecked(true);
+            }
         }
 
         // 리소스 누수 방지를 위해 Cursor와 DB를 반드시 닫아줍니다.
@@ -116,8 +137,10 @@ public class UserFragment extends Fragment {
      * 데이터 존재 여부에 따라 정보를 저장(INSERT)하거나 업데이트(UPDATE)합니다.
      * 안전한 ContentValues를 사용하여 SQL Injection을 방지합니다.
      */
-    private void saveOrUpdateProfile(String name, String age, String height, String weight) {
-        persistProfile(selectedBitmap); // 프로필 사진 저장
+    private void saveOrUpdateProfile(String name, String age, String height, String weight, String gender) {
+        if (selectedBitmap != null) {
+            persistProfile(selectedBitmap); // 프로필 사진 저장
+        }
 
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -125,6 +148,7 @@ public class UserFragment extends Fragment {
         values.put("age", age);
         values.put("height", height);
         values.put("weight", weight);
+        values.put("gender", gender);
 
         // 테이블의 데이터 개수를 확인하여 분기 처리
         long count = db.compileStatement("SELECT COUNT(*) FROM myinfo").simpleQueryForLong();
@@ -235,6 +259,10 @@ public class UserFragment extends Fragment {
      * 프로필 이미지 저장 함수
      */
     private void persistProfile(Bitmap selected) {
+        if (selected == null) {
+            return;
+        }
+
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
                 String path = ProfileImageStore.saveProfileBitmap(requireContext(), selected);

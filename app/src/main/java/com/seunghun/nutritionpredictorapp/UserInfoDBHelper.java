@@ -22,7 +22,8 @@ public class UserInfoDBHelper extends SQLiteOpenHelper {
         sql += "name text, ";
         sql += "age text, ";
         sql += "height text, ";
-        sql += "weight text";
+        sql += "weight text, ";
+        sql += "gender text";
         sql += " )";
 
         db.execSQL(sql);
