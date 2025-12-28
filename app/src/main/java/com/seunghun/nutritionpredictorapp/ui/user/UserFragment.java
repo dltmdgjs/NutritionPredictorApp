@@ -1,9 +1,16 @@
 package com.seunghun.nutritionpredictorapp.ui.user;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +19,20 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.seunghun.nutritionpredictorapp.UserInfoDBHelper;
 import com.seunghun.nutritionpredictorapp.databinding.FragmentUserBinding;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.concurrent.Executors;
 
 // 사용자 정보 입력 및 저장을 위한 Fragment.
 public class UserFragment extends Fragment {
@@ -26,6 +41,7 @@ public class UserFragment extends Fragment {
     static final String mFILENAME = "myInfo.db";
 
     private EditText etName, etAge, etHeight, etWeight;
+    private Bitmap selectedBitmap;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -46,7 +62,8 @@ public class UserFragment extends Fragment {
         mHelper = new UserInfoDBHelper(getContext(), mFILENAME, null, 1);
 
         // 1. 화면 로드 시 데이터 조회 및 표시
-        loadData();
+        restoreProfileImage(); // 프로필 이미지 로드
+        loadData(); // 신체정보 데이터 로드
 
         /** 저장 버튼 리스너 설정 */
         Button btSave = binding.btSave;
@@ -67,12 +84,7 @@ public class UserFragment extends Fragment {
 
         /** 프로필 이미지 클릭 시 사진첩 접근해 이미지 변경하기 */
         binding.ivProfile.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "사진첩 접근", Toast.LENGTH_SHORT).show();
-            //TODO: 사진첩 접근 로직 구현
-            // 1. 사용자에 갤러리 접근 요청
-            // 2. 갤러리에서 사진 선택. (결과는 onActivityResult로 받음)
-            // 3. 선택한 사진을 ImageView에 표시
-            // 4. 선택한 사진의 정보를 DB에 저장
+            showImagePickerDialog(); // selectedBitmap 업데이트
         });
 
         return root;
@@ -105,6 +117,8 @@ public class UserFragment extends Fragment {
      * 안전한 ContentValues를 사용하여 SQL Injection을 방지합니다.
      */
     private void saveOrUpdateProfile(String name, String age, String height, String weight) {
+        persistProfile(selectedBitmap); // 프로필 사진 저장
+
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("name", name);
@@ -134,5 +148,108 @@ public class UserFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    /**
+     * 카메라/갤러리 접근 선택 다이얼로그 함수 (프로필 이미지 선택)
+     */
+    private void showImagePickerDialog() {
+        String[] options = {"카메라", "갤러리"};
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("이미지 선택")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        openCamera(); // 카메라 열기
+                    } else {
+                        openGallery(); // 갤러리 열기
+                    }
+                })
+                .show();
+    }
+
+    // 카메라 런처
+    private final ActivityResultLauncher<Void> cameraLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.TakePicturePreview(),
+                    bitmap -> {
+                        if (bitmap != null) {
+                            selectedBitmap = bitmap;
+                            binding.ivProfile.setImageBitmap(bitmap);
+                        }
+                    }
+            );
+
+    // 갤러리 런처
+    private final ActivityResultLauncher<String> galleryLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.GetContent(),
+                    uri -> {
+                        if (uri != null) {
+                            try {
+                                selectedBitmap = MediaStore.Images.Media.getBitmap(
+                                        requireActivity().getContentResolver(), uri
+                                );
+                                binding.ivProfile.setImageBitmap(selectedBitmap);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+            );
+
+    // 카메라 열기 함수
+    private void openCamera() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.CAMERA
+        ) != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(
+                    new String[]{Manifest.permission.CAMERA},
+                    1001
+            );
+        } else {
+            cameraLauncher.launch(null);
+        }
+    }
+
+    // 갤러리 열기 함수
+    private void openGallery() {
+        galleryLauncher.launch("image/*");
+    }
+
+    /**
+     * 프로필 이미지 로드 함수
+     */
+    private void restoreProfileImage() {
+        String path = ProfilePrefs.getProfilePath(requireContext());
+        if (path == null) return;
+
+        File f = new File(path);
+        if (!f.exists()) return;
+
+        binding.ivProfile.setImageBitmap(BitmapFactory.decodeFile(path));
+    }
+
+    /**
+     * 프로필 이미지 저장 함수
+     */
+    private void persistProfile(Bitmap selected) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                String path = ProfileImageStore.saveProfileBitmap(requireContext(), selected);
+                ProfilePrefs.saveProfilePath(requireContext(), path);
+
+                requireActivity().runOnUiThread(() -> {
+                    // Toast.makeText(getContext(), "프로필 저장됨", Toast.LENGTH_SHORT).show();
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                requireActivity().runOnUiThread(() -> {
+                    // Toast.makeText(getContext(), "프로필 저장 실패", Toast.LENGTH_LONG).show();
+                });
+            }
+        });
     }
 }
