@@ -1,6 +1,4 @@
-package com.seunghun.nutritionpredictorapp.ui.notifications;
-
-import static java.util.EnumSet.range;
+package com.seunghun.nutritionpredictorapp.ui.log;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,24 +13,23 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.seunghun.nutritionpredictorapp.IntakeInfoDBHelper;
-import com.seunghun.nutritionpredictorapp.UserInfoDBHelper;
-import com.seunghun.nutritionpredictorapp.databinding.FragmentNotificationsBinding;
+import com.seunghun.nutritionpredictorapp.databinding.FragmentLogBinding;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class NotificationsFragment extends Fragment {
-    private FragmentNotificationsBinding binding;
+public class LogFragment extends Fragment {
+    private FragmentLogBinding binding;
     IntakeInfoDBHelper mHelper;
     static final String mFILENAME = "intakeInfo.db";
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
+        LogViewModel logViewModel =
+                new ViewModelProvider(this).get(LogViewModel.class);
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentLogBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         // DBHelper 초기화

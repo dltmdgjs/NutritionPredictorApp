@@ -1,16 +1,16 @@
-package com.seunghun.nutritionpredictorapp.ui.notifications;
+package com.seunghun.nutritionpredictorapp.ui.log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NotificationsViewModel extends ViewModel {
+public class LogViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public NotificationsViewModel() {
+    public LogViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is notifications fragment");
+        mText.setValue("This is log fragment");
     }
 
     public LiveData<String> getText() {
