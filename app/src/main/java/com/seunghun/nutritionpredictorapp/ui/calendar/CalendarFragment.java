@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
@@ -139,15 +137,17 @@ public class CalendarFragment extends Fragment {
         return binding.getRoot();
     }
 
+    /** 해당 월의 일자별 음식명 리스트 얻음. */
     private void loadMonth(YearMonth ym) {
         String ymStr = ym.format(ymFmt);
-        monthLabels = repo.getMonthFoodLabels(ymStr);
+        monthLabels = repo.getMonthFoodLabels(ymStr); // 해당 월의 일자별 음식명 리스트 얻음.
 
         // monthLabels만 바뀌면 기존 셀을 다시 그려야 음식명 표시가 갱신됩니다.
         // invalidate() 역할: 보이는 영역 다시 바인딩
         binding.calendarView.notifyCalendarChanged();
     }
 
+    /** 음식명들을 한 String으로 합침. */
     private String summarizeLabels(List<String> labels) {
         if (labels == null || labels.isEmpty()) return "";
         if (labels.size() == 1) return labels.get(0);
