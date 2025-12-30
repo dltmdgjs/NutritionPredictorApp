@@ -35,7 +35,7 @@ public class LogFragment extends Fragment {
         // DBHelper 초기화
         mHelper = new IntakeInfoDBHelper(getContext(), mFILENAME, null, 1);
 
-        loadData();
+        loadTodayIntakeInfo();
 
         return root;
     }
@@ -46,12 +46,17 @@ public class LogFragment extends Fragment {
         binding = null;
     }
 
-    private void loadData() {
+    /**
+     * DB에서 당일 섭취 기록을 읽어와 Text에 표시합니다.
+     */
+    private void loadTodayIntakeInfo() {
+        // 오늘 날짜
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String today = sdf.format(date);
 
+        // 오늘 날짜에 해당하는 섭취 기록을 불러옴
         SQLiteDatabase db = mHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM intakeinfo WHERE date = ?", new String[]{today});
 
@@ -67,6 +72,7 @@ public class LogFragment extends Fragment {
             int sugars = 0;
             int sodium = 0;
 
+            // 오늘 섭취한 영양 성분을 합함.
             int i = cursor.getCount();
             for (int j = 0; j < i; j++) {
                 String food = cursor.getString(cursor.getColumnIndexOrThrow("food"));
@@ -82,6 +88,7 @@ public class LogFragment extends Fragment {
                 cursor.moveToNext();
             }
 
+            // 텍스트로 보여줌
             String str = "중량: " + gram + "g\n";
             str += "칼로리: " + calories + "kcal\n";
             str += "단백질: " + protein + "g\n";
@@ -92,10 +99,11 @@ public class LogFragment extends Fragment {
             str += "나트륨: " + sodium + "mg\n";
 
 
-            binding.tvLoadInfo.setText(str);
-            binding.tvFoodIntake.append(foods);
-            binding.tvFoodIntake.setVisibility(View.VISIBLE);
-            binding.textView4.setVisibility(View.VISIBLE);
+            binding.tvLoadInfo.setText(str); // 섭취한 영양 성분 정보
+            binding.tvTodayFood.append(foods); // 섭취한 음식명
+
+            binding.tvTodayFood.setVisibility(View.VISIBLE);
+            binding.tvTodayIntake.setVisibility(View.VISIBLE);
 
         } else {
             Toast.makeText(getContext(), "섭취 기록이 없습니다.", Toast.LENGTH_SHORT).show();

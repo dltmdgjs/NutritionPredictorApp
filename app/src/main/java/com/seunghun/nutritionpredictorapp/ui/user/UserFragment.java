@@ -44,6 +44,7 @@ public class UserFragment extends Fragment {
 
     private EditText etName, etAge, etHeight, etWeight;
     private String gender = "남";
+    private String activityLevel = "중";
     private Bitmap selectedBitmap = null;
 
 
@@ -67,7 +68,7 @@ public class UserFragment extends Fragment {
 
         // 1. 화면 로드 시 데이터 조회 및 표시
         restoreProfileImage(); // 프로필 이미지 로드
-        loadData(); // 신체정보 데이터 로드
+        loadUserData(); // 사용자 정보 데이터 로드
 
         /** 프로필 이미지 클릭 시 사진첩 접근해 이미지 변경하기 */
         binding.ivProfile.setOnClickListener(v -> {
@@ -86,6 +87,20 @@ public class UserFragment extends Fragment {
                 }
         );
 
+        /** 활동량 라디오 버튼 */
+        binding.rgActivityLevel.setOnCheckedChangeListener((group, checkedId)-> {
+                    if (checkedId == binding.rbActivityLevelLow.getId()) {
+                        activityLevel = "저";
+                    }
+                    else if (checkedId == binding.rbActivityLevelMedium.getId()) {
+                        activityLevel = "중";
+                    }
+                    else if (checkedId == binding.rbActivityLevelHigh.getId()) {
+                        activityLevel = "고";
+                    }
+                }
+        );
+
         /** 저장 버튼 리스너 설정 */
         binding.btSave.setOnClickListener(v -> {
             String name = etName.getText().toString();
@@ -99,7 +114,7 @@ public class UserFragment extends Fragment {
             }
 
             // 2. 데이터 저장 또는 업데이트 로직 실행
-            saveOrUpdateProfile(name, age, height, weight, gender);
+            saveOrUpdateProfile(name, age, height, weight, gender, activityLevel);
         });
 
         return root;
@@ -109,9 +124,9 @@ public class UserFragment extends Fragment {
      * DB에서 사용자 정보를 읽어와 EditText에 표시합니다.
      * DB 작업이 끝나면 리소스를 항상 닫습니다.
      */
-    private void loadData() {
+    private void loadUserData() {
         SQLiteDatabase db = mHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT name, age, height, weight, gender FROM myinfo", null);
+        Cursor cursor = db.rawQuery("SELECT name, age, height, weight, gender, activity FROM myinfo", null);
 
         // moveToFirst()는 커서를 첫 번째 행으로 이동시키며, 데이터가 있으면 true를 반환합니다.
         if (cursor.moveToFirst()) {
@@ -121,10 +136,18 @@ public class UserFragment extends Fragment {
             etHeight.setText(cursor.getString(cursor.getColumnIndexOrThrow("height")));
             etWeight.setText(cursor.getString(cursor.getColumnIndexOrThrow("weight")));
             gender = cursor.getString(cursor.getColumnIndexOrThrow("gender"));
+            activityLevel = cursor.getString(cursor.getColumnIndexOrThrow("activity"));
             if (gender.equals("남")) {
                 binding.rbMan.setChecked(true);
             } else {
                 binding.rbWoman.setChecked(true);
+            }
+            if (activityLevel.equals("저")) {
+                binding.rbActivityLevelLow.setChecked(true);
+            } else if (activityLevel.equals("중")) {
+                binding.rbActivityLevelMedium.setChecked(true);
+            } else {
+                binding.rbActivityLevelHigh.setChecked(true);
             }
         }
 
@@ -137,7 +160,7 @@ public class UserFragment extends Fragment {
      * 데이터 존재 여부에 따라 정보를 저장(INSERT)하거나 업데이트(UPDATE)합니다.
      * 안전한 ContentValues를 사용하여 SQL Injection을 방지합니다.
      */
-    private void saveOrUpdateProfile(String name, String age, String height, String weight, String gender) {
+    private void saveOrUpdateProfile(String name, String age, String height, String weight, String gender, String activityLevel) {
         if (selectedBitmap != null) {
             persistProfile(selectedBitmap); // 프로필 사진 저장
         }
@@ -149,6 +172,7 @@ public class UserFragment extends Fragment {
         values.put("height", height);
         values.put("weight", weight);
         values.put("gender", gender);
+        values.put("activity", activityLevel);
 
         // 테이블의 데이터 개수를 확인하여 분기 처리
         long count = db.compileStatement("SELECT COUNT(*) FROM myinfo").simpleQueryForLong();

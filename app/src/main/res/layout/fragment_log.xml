@@ -10,7 +10,7 @@
 
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tv_log"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -19,7 +19,7 @@
         android:textSize="20sp" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/tv_today_intake"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -37,7 +37,7 @@
         android:text="섭취 기록이 없습니다." />
 
     <TextView
-        android:id="@+id/tv_food_intake"
+        android:id="@+id/tv_today_food"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"

@@ -176,6 +176,53 @@
         </RadioGroup>
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:weightSum="10">
+
+        <TextView
+            android:id="@+id/tv_activity_level"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="활동량"
+            android:textSize="20sp" />
+
+        <RadioGroup
+            android:id="@+id/rg_activity_level"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="7"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_activity_level_low"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="저" />
+
+            <RadioButton
+                android:id="@+id/rb_activity_level_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="중" />
+            <RadioButton
+                android:id="@+id/rb_activity_level_high"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="고" />
+        </RadioGroup>
+    </LinearLayout>
+
     <Button
         android:id="@+id/bt_save"
         android:layout_width="match_parent"
