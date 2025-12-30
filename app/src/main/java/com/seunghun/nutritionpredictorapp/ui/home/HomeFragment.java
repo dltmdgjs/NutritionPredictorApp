@@ -30,6 +30,7 @@ import com.seunghun.nutritionpredictorapp.IntakeInfoDBHelper;
 import com.seunghun.nutritionpredictorapp.R;
 import com.seunghun.nutritionpredictorapp.data.LabelLoader;
 import com.seunghun.nutritionpredictorapp.data.NutritionCalculator;
+import com.seunghun.nutritionpredictorapp.data.db.AppDbHelper;
 import com.seunghun.nutritionpredictorapp.databinding.FragmentHomeBinding;
 import com.seunghun.nutritionpredictorapp.ml.FoodClassifier;
 
@@ -48,6 +49,7 @@ public class HomeFragment extends Fragment {
     private NutritionCalculator calc;
     private NutritionCalculator.NutritionInfo info;
     IntakeInfoDBHelper mHelper;
+    AppDbHelper dbHelper;
     static final String mFILENAME = "intakeInfo.db";
 
 
@@ -60,6 +62,7 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         mHelper = new IntakeInfoDBHelper(getContext(), mFILENAME, null, 1);
+        dbHelper = new AppDbHelper(getContext());
 
         // 모델 로드
         foodClassifier = new FoodClassifier(requireContext());
@@ -300,5 +303,21 @@ public class HomeFragment extends Fragment {
         db.insert("intakeinfo", null, values);
         Toast.makeText(getContext(), "섭취 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
         db.close();
+
+        SQLiteDatabase db1 = dbHelper.getWritableDatabase();
+        ContentValues values1 = new ContentValues();
+
+        values1.put("date", today);
+        values1.put("label", label);
+        values1.put("grams", info.weight);
+        values1.put("calories", info.calories);
+        values1.put("protein", info.protein);
+        values1.put("carbs", info.carbohydrates);
+        values1.put("fats", info.fats);
+        values1.put("fiber", info.fiber);
+        values1.put("sugars", info.sugars);
+        values1.put("sodium", info.sodium);
+        db1.insert("intake_log", null, values1);
+        db1.close();
     }
 }

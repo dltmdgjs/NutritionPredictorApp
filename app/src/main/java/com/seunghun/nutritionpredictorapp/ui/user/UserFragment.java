@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.seunghun.nutritionpredictorapp.R;
 import com.seunghun.nutritionpredictorapp.UserInfoDBHelper;
+import com.seunghun.nutritionpredictorapp.data.db.AppDbHelper;
 import com.seunghun.nutritionpredictorapp.databinding.FragmentUserBinding;
 
 import java.io.File;
@@ -40,6 +41,7 @@ import java.util.concurrent.Executors;
 public class UserFragment extends Fragment {
     private FragmentUserBinding binding;
     UserInfoDBHelper mHelper;
+    AppDbHelper dbHelper;
     static final String mFILENAME = "myInfo.db";
 
     private EditText etName, etAge, etHeight, etWeight;
@@ -65,6 +67,7 @@ public class UserFragment extends Fragment {
 
         // DBHelper 초기화
         mHelper = new UserInfoDBHelper(getContext(), mFILENAME, null, 1);
+        dbHelper = new AppDbHelper(getContext());
 
         // 1. 화면 로드 시 데이터 조회 및 표시
         restoreProfileImage(); // 프로필 이미지 로드
@@ -174,8 +177,17 @@ public class UserFragment extends Fragment {
         values.put("gender", gender);
         values.put("activity", activityLevel);
 
+        SQLiteDatabase db1 = dbHelper.getWritableDatabase();
+        ContentValues values1 = new ContentValues();
+        values1.put("age", age);
+        values1.put("height_cm", height);
+        values1.put("weight_kg", weight);
+        values1.put("sex", gender);
+        values1.put("activity", activityLevel);
+
         // 테이블의 데이터 개수를 확인하여 분기 처리
         long count = db.compileStatement("SELECT COUNT(*) FROM myinfo").simpleQueryForLong();
+        long count1 = db1.compileStatement("SELECT COUNT(*) FROM user_profile").simpleQueryForLong();
 
         if (count > 0) {
             // 데이터가 있으면 UPDATE
@@ -188,8 +200,15 @@ public class UserFragment extends Fragment {
             Toast.makeText(getContext(), "정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
         }
 
+        if (count1 > 0) {
+            db1.update("user_profile", values1, null, null);
+        } else {
+            db1.insert("user_profile", null, values1);
+        }
+
         // DB 사용 후 닫기
         db.close();
+        db1.close();
     }
 
     @Override
