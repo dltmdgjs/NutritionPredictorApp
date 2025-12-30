@@ -16,4 +16,9 @@
         android:icon="@drawable/ic_log_black_24dp"
         android:title="@string/title_log" />
 
+    <item
+        android:id="@+id/navigation_calendar"
+        android:icon="@drawable/ic_calendar_black_24dp"
+        android:title="@string/title_calendar" />
+
 </menu>
