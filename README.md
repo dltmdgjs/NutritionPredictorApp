@@ -4,6 +4,8 @@
 
 ---
 
+<img src="https://github.com/user-attachments/assets/52d256ea-45be-4a67-8c65-044bcae3c42b" width="300" height="700" />
+
 ## 1. 주요 기능
 ### 1) 음식 이미지 분류 (On-device)
 - 카메라 촬영 / 갤러리 선택 → `ImageView` 표시
@@ -50,7 +52,7 @@
 
 ---
 
-## 4. 전처리(Preprocess) 주의사항 (가장 중요)
+## 4. 전처리(Preprocess) 주의사항
 모델이 기대하는 입력 스케일이 학습과 추론에서 다르면,
 - 서로 다른 이미지를 넣어도 Top-1이 한 클래스로 고정되는 현상이 발생할 수 있습니다.
 
@@ -104,19 +106,7 @@
 
 ---
 
-## 8. 트러블슈팅(실제로 겪은 이슈)
-- (1) **Flex op 에러**: `Select TensorFlow op(s) … FlexMul`
-  - 원인: 변환 시 `SELECT_TF_OPS` 포함
-  - 해결: 가능하면 Builtins-only로 변환 / 불가하면 select-tf-ops 의존성 추가
-- (2) **Top-1이 항상 같은 클래스**로 나오는 문제
-  - 원인: 전처리 스케일 불일치
-  - 해결: 학습 전처리와 Android 전처리를 동일하게 맞춤(raw255/0~1/[-1,1])
-- (3) 레이아웃이 상단/하단 바에 가려짐
-  - 해결: `WindowInsets` 처리 + 필요 시 XML padding/margin 조정
-
----
-
-## 9. 향후 개선 아이디어
+## 8. 향후 개선 아이디어
 - 기록 삭제/수정 기능 추가
 - 영양 목표치 정책을 사용자 설정(감량/유지/증량)으로 확장
 - Room ORM로 마이그레이션(선택)
@@ -126,4 +116,4 @@
 ---
 
 ## License
-- (추가 예정)
+- MIT License
