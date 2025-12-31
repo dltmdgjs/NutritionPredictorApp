@@ -3,7 +3,6 @@ package com.seunghun.nutritionpredictorapp.ui.user;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,10 +13,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -27,23 +23,17 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.seunghun.nutritionpredictorapp.R;
-import com.seunghun.nutritionpredictorapp.UserInfoDBHelper;
 import com.seunghun.nutritionpredictorapp.data.db.AppDbHelper;
 import com.seunghun.nutritionpredictorapp.databinding.FragmentUserBinding;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 
 // 사용자 정보 입력 및 저장을 위한 Fragment.
 public class UserFragment extends Fragment {
     private FragmentUserBinding binding;
-    UserInfoDBHelper mHelper;
     AppDbHelper dbHelper;
-    static final String mFILENAME = "myInfo.db";
-
     private EditText etName, etAge, etHeight, etWeight;
     private String gender = "남";
     private String activityLevel = "중";
@@ -66,10 +56,9 @@ public class UserFragment extends Fragment {
 
 
         // DBHelper 초기화
-        mHelper = new UserInfoDBHelper(getContext(), mFILENAME, null, 1);
         dbHelper = new AppDbHelper(getContext());
 
-        // 1. 화면 로드 시 데이터 조회 및 표시
+        // 화면 로드 시 데이터 조회 및 표시
         restoreProfileImage(); // 프로필 이미지 로드
         loadUserData(); // 사용자 정보 데이터 로드
 
@@ -128,17 +117,17 @@ public class UserFragment extends Fragment {
      * DB 작업이 끝나면 리소스를 항상 닫습니다.
      */
     private void loadUserData() {
-        SQLiteDatabase db = mHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT name, age, height, weight, gender, activity FROM myinfo", null);
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT name, age, height_cm, weight_kg, sex, activity FROM user_profile", null);
 
         // moveToFirst()는 커서를 첫 번째 행으로 이동시키며, 데이터가 있으면 true를 반환합니다.
         if (cursor.moveToFirst()) {
             // getColumnIndexOrThrow는 컬럼이 없을 경우 예외를 발생시켜 실수를 방지합니다.
             etName.setText(cursor.getString(cursor.getColumnIndexOrThrow("name")));
             etAge.setText(cursor.getString(cursor.getColumnIndexOrThrow("age")));
-            etHeight.setText(cursor.getString(cursor.getColumnIndexOrThrow("height")));
-            etWeight.setText(cursor.getString(cursor.getColumnIndexOrThrow("weight")));
-            gender = cursor.getString(cursor.getColumnIndexOrThrow("gender"));
+            etHeight.setText(cursor.getString(cursor.getColumnIndexOrThrow("height_cm")));
+            etWeight.setText(cursor.getString(cursor.getColumnIndexOrThrow("weight_kg")));
+            gender = cursor.getString(cursor.getColumnIndexOrThrow("sex"));
             activityLevel = cursor.getString(cursor.getColumnIndexOrThrow("activity"));
             if (gender.equals("남")) {
                 binding.rbMan.setChecked(true);
@@ -168,17 +157,9 @@ public class UserFragment extends Fragment {
             persistProfile(selectedBitmap); // 프로필 사진 저장
         }
 
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("name", name);
-        values.put("age", age);
-        values.put("height", height);
-        values.put("weight", weight);
-        values.put("gender", gender);
-        values.put("activity", activityLevel);
-
         SQLiteDatabase db1 = dbHelper.getWritableDatabase();
         ContentValues values1 = new ContentValues();
+        values1.put("name", name);
         values1.put("age", age);
         values1.put("height_cm", height);
         values1.put("weight_kg", weight);
@@ -186,28 +167,19 @@ public class UserFragment extends Fragment {
         values1.put("activity", activityLevel);
 
         // 테이블의 데이터 개수를 확인하여 분기 처리
-        long count = db.compileStatement("SELECT COUNT(*) FROM myinfo").simpleQueryForLong();
         long count1 = db1.compileStatement("SELECT COUNT(*) FROM user_profile").simpleQueryForLong();
 
-        if (count > 0) {
+        if (count1 > 0) {
             // 데이터가 있으면 UPDATE
-            // WHERE 절을 생략하면 모든 행이 업데이트됩니다. 이 앱에서는 데이터가 하나이므로 괜찮습니다.
-            db.update("myinfo", values, null, null);
+            db1.update("user_profile", values1, null, null);
             Toast.makeText(getContext(), "정보가 업데이트되었습니다.", Toast.LENGTH_SHORT).show();
         } else {
             // 데이터가 없으면 INSERT
-            db.insert("myinfo", null, values);
+            db1.insert("user_profile", null, values1);
             Toast.makeText(getContext(), "정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
         }
 
-        if (count1 > 0) {
-            db1.update("user_profile", values1, null, null);
-        } else {
-            db1.insert("user_profile", null, values1);
-        }
-
         // DB 사용 후 닫기
-        db.close();
         db1.close();
     }
 
@@ -312,13 +284,11 @@ public class UserFragment extends Fragment {
                 ProfilePrefs.saveProfilePath(requireContext(), path);
 
                 requireActivity().runOnUiThread(() -> {
-                    // Toast.makeText(getContext(), "프로필 저장됨", Toast.LENGTH_SHORT).show();
                 });
 
             } catch (Exception e) {
                 e.printStackTrace();
                 requireActivity().runOnUiThread(() -> {
-                    // Toast.makeText(getContext(), "프로필 저장 실패", Toast.LENGTH_LONG).show();
                 });
             }
         });

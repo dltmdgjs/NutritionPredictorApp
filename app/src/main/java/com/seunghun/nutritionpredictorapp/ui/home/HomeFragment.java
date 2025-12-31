@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -26,8 +25,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.seunghun.nutritionpredictorapp.IntakeInfoDBHelper;
-import com.seunghun.nutritionpredictorapp.R;
 import com.seunghun.nutritionpredictorapp.data.LabelLoader;
 import com.seunghun.nutritionpredictorapp.data.NutritionCalculator;
 import com.seunghun.nutritionpredictorapp.data.db.AppDbHelper;
@@ -48,9 +45,7 @@ public class HomeFragment extends Fragment {
     private String label;
     private NutritionCalculator calc;
     private NutritionCalculator.NutritionInfo info;
-    IntakeInfoDBHelper mHelper;
     AppDbHelper dbHelper;
-    static final String mFILENAME = "intakeInfo.db";
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -61,7 +56,6 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        mHelper = new IntakeInfoDBHelper(getContext(), mFILENAME, null, 1);
         dbHelper = new AppDbHelper(getContext());
 
         // 모델 로드
@@ -74,25 +68,12 @@ public class HomeFragment extends Fragment {
         /** 이미지 클릭 시 카메라 접근해 이미지 변경하기 */
         binding.ivFood.setOnClickListener(v -> {
             Toast.makeText(getContext(), "카메라/갤러리 접근", Toast.LENGTH_SHORT).show();
-            //TODO: 카메라 접근 로직 구현 (완료)
-            // 1. 사용자에 카메라 접근 요청
-            // 2. 사진 촬영 (결과는 onActivityResult로 받음)
-            // 3. 촬영한 사진을 ImageView에 표시
-
-            // ----------------------------------------
             showImagePickerDialog();
         });
 
         // 영양정보 보기 버튼 클릭 이벤트 리스너
         /** 영양정보 보기 버튼 클릭 시, 예측 후 영양정보 창 전개 */
         binding.btPredict.setOnClickListener(v -> {
-            // TODO: 예측 로직 구현
-            //      - 파이썬 연동(모델 로드 및 예측 성공, FoodClassifier.java)
-            //      - index -> label -> 영양정보 매핑(LabelLoader.java, NutritionCalculator.java)
-            // TODO: 영양 정보 예측 창 전개 (현재 HomeFragment에 그대로 띄우기만 하고 있음)
-            //      - 대안 : HomeFragment에 그대로 띄우되, 예측 성공 시 저장 버튼이 띄워지도록 함. (완료)
-
-            // ------------------------------------------
             // 이미지, 중량
             ImageView imageView = binding.ivFood;
             EditText editText = binding.etFweight;
@@ -118,10 +99,6 @@ public class HomeFragment extends Fragment {
         // 저장하기 버튼 클릭 이벤트 리스너
         /** 저장하기 버튼 클릭 시, 데이터 베이스에 저장 */
         binding.btSave.setOnClickListener(v -> {
-            // TODO: 저장 기능 구현
-            //      - 데이터 베이스에 일자별 섭취 영양정보 저장
-
-            // ---------------------------------------
             saveIntakeInfo();
         });
 
@@ -282,27 +259,10 @@ public class HomeFragment extends Fragment {
      * 데이터 베이스에 일자별 섭취 영양정보 저장 함수 (저장하기 버튼 이벤트 리스너에서 실행됨)
      */
     private void saveIntakeInfo() {
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String today = sdf.format(date);
-
-        values.put("date", today);
-        values.put("food", label);
-        values.put("gram", info.weight);
-        values.put("calories", info.calories);
-        values.put("protein", info.protein);
-        values.put("carbohydrates", info.carbohydrates);
-        values.put("fats", info.fats);
-        values.put("fiber", info.fiber);
-        values.put("sugars", info.sugars);
-        values.put("sodium", info.sodium);
-        db.insert("intakeinfo", null, values);
-        Toast.makeText(getContext(), "섭취 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
-        db.close();
 
         SQLiteDatabase db1 = dbHelper.getWritableDatabase();
         ContentValues values1 = new ContentValues();
@@ -318,6 +278,7 @@ public class HomeFragment extends Fragment {
         values1.put("sugars", info.sugars);
         values1.put("sodium", info.sodium);
         db1.insert("intake_log", null, values1);
+        Toast.makeText(getContext(), "섭취 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
         db1.close();
     }
 }

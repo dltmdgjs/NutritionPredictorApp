@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.seunghun.nutritionpredictorapp.IntakeInfoDBHelper;
+import com.seunghun.nutritionpredictorapp.data.db.AppDbHelper;
 import com.seunghun.nutritionpredictorapp.databinding.FragmentLogBinding;
 
 import java.text.SimpleDateFormat;
@@ -20,8 +20,7 @@ import java.util.Date;
 
 public class LogFragment extends Fragment {
     private FragmentLogBinding binding;
-    IntakeInfoDBHelper mHelper;
-    static final String mFILENAME = "intakeInfo.db";
+    AppDbHelper dbHelper;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -33,7 +32,7 @@ public class LogFragment extends Fragment {
         View root = binding.getRoot();
 
         // DBHelper 초기화
-        mHelper = new IntakeInfoDBHelper(getContext(), mFILENAME, null, 1);
+        dbHelper = new AppDbHelper(getContext());
 
         loadTodayIntakeInfo();
 
@@ -57,10 +56,10 @@ public class LogFragment extends Fragment {
         String today = sdf.format(date);
 
         // 오늘 날짜에 해당하는 섭취 기록을 불러옴
-        SQLiteDatabase db = mHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM intakeinfo WHERE date = ?", new String[]{today});
+        SQLiteDatabase db1 = dbHelper.getReadableDatabase();
+        Cursor cursor1 = db1.rawQuery("SELECT * FROM intake_log WHERE date = ?", new String[]{today});
 
-        if (cursor.moveToFirst()) {
+        if (cursor1.moveToFirst()) {
             Toast.makeText(getContext(), "섭취 기록이 있습니다.", Toast.LENGTH_SHORT).show();
             String foods = "";
             int gram = 0;
@@ -73,19 +72,19 @@ public class LogFragment extends Fragment {
             int sodium = 0;
 
             // 오늘 섭취한 영양 성분을 합함.
-            int i = cursor.getCount();
+            int i = cursor1.getCount();
             for (int j = 0; j < i; j++) {
-                String food = cursor.getString(cursor.getColumnIndexOrThrow("food"));
+                String food = cursor1.getString(cursor1.getColumnIndexOrThrow("label"));
                 foods += "\n" + food;
-                gram += cursor.getInt(cursor.getColumnIndexOrThrow("gram"));
-                calories += cursor.getInt(cursor.getColumnIndexOrThrow("calories"));
-                protein += cursor.getInt(cursor.getColumnIndexOrThrow("protein"));
-                carbohydrates += cursor.getInt(cursor.getColumnIndexOrThrow("carbohydrates"));
-                fats += cursor.getInt(cursor.getColumnIndexOrThrow("fats"));
-                fiber += cursor.getInt(cursor.getColumnIndexOrThrow("fiber"));
-                sugars += cursor.getInt(cursor.getColumnIndexOrThrow("sugars"));
-                sodium += cursor.getInt(cursor.getColumnIndexOrThrow("sodium"));
-                cursor.moveToNext();
+                gram += cursor1.getInt(cursor1.getColumnIndexOrThrow("grams"));
+                calories += cursor1.getInt(cursor1.getColumnIndexOrThrow("calories"));
+                protein += cursor1.getInt(cursor1.getColumnIndexOrThrow("protein"));
+                carbohydrates += cursor1.getInt(cursor1.getColumnIndexOrThrow("carbs"));
+                fats += cursor1.getInt(cursor1.getColumnIndexOrThrow("fats"));
+                fiber += cursor1.getInt(cursor1.getColumnIndexOrThrow("fiber"));
+                sugars += cursor1.getInt(cursor1.getColumnIndexOrThrow("sugars"));
+                sodium += cursor1.getInt(cursor1.getColumnIndexOrThrow("sodium"));
+                cursor1.moveToNext();
             }
 
             // 텍스트로 보여줌
@@ -109,7 +108,7 @@ public class LogFragment extends Fragment {
             Toast.makeText(getContext(), "섭취 기록이 없습니다.", Toast.LENGTH_SHORT).show();
         }
 
-        cursor.close();
-        db.close();
+        cursor1.close();
+        db1.close();
     }
 }

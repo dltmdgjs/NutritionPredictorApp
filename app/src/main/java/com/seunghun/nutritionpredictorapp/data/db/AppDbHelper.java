@@ -16,9 +16,10 @@ public class AppDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // 이미 구현되어 있다면 생략/수정
+        // 사용자 신체 정보 테이블 생성
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS user_profile (" +
+                        "name TEXT," +
                         "age INTEGER," +
                         "height_cm REAL," +
                         "weight_kg REAL," +
@@ -27,6 +28,7 @@ public class AppDbHelper extends SQLiteOpenHelper {
                         ");"
         );
 
+        // 섭취 기록 테이블 생성
         db.execSQL(
                 "CREATE TABLE IF NOT EXISTS intake_log (" +
                         "date TEXT," +        // yyyy-MM-dd

@@ -37,7 +37,6 @@ public class FoodClassifier {
     // ===============================
     // 추론 함수 (Bitmap → class index)
     // ===============================
-
     public int predict(Bitmap bitmap) {
 
         // 1) 리사이즈만 하고, 정규화(나누기 255 / -1~1)는 하지 않습니다.

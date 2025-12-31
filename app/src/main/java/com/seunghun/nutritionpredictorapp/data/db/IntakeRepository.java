@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.seunghun.nutritionpredictorapp.data.model.DailyLogItem;
 import com.seunghun.nutritionpredictorapp.data.model.NutritionTotals;
 import com.seunghun.nutritionpredictorapp.data.model.UserProfile;
 
@@ -23,9 +22,7 @@ public class IntakeRepository {
         helper = new AppDbHelper(context.getApplicationContext());
     }
 
-    // -------------------------
-    // 사용자 프로필 1건 읽기
-    // -------------------------
+    // 사용자 프로필 읽기
     public UserProfile getUserProfileOrNull() {
         SQLiteDatabase db = helper.getReadableDatabase();
         Cursor c = db.rawQuery(
@@ -49,11 +46,9 @@ public class IntakeRepository {
         }
     }
 
-    // -------------------------
-    // (1) 달력: 특정 월의 "날짜별 음식명 리스트" 조회
+
+    // 달력: 특정 월의 "날짜별 음식명 리스트" 조회
     // yearMonth: "yyyy-MM" 형태
-    // 반환: date -> labels(list)
-    // -------------------------
     public Map<String, List<String>> getMonthFoodLabels(String yearMonth) {
         // 예: yearMonth="2025-12" => date LIKE '2025-12-%'
         SQLiteDatabase db = helper.getReadableDatabase();
@@ -79,42 +74,8 @@ public class IntakeRepository {
         }
     }
 
-    // -------------------------
-    // (2) 일자 상세: 해당 날짜의 "로그 리스트" 조회
-    // -------------------------
-    public List<DailyLogItem> getDailyLogs(String date) {
-        SQLiteDatabase db = helper.getReadableDatabase();
-        Cursor c = db.rawQuery(
-                "SELECT date, label, grams, calories, protein, carbs, fats, fiber, sugars, sodium " +
-                        "FROM intake_log WHERE date=?",
-                new String[]{ date }
-        );
 
-        List<DailyLogItem> out = new ArrayList<>();
-        try {
-            while (c.moveToNext()) {
-                DailyLogItem it = new DailyLogItem();
-                it.date = c.getString(0);
-                it.label = c.getString(1);
-                it.grams = c.getInt(2);
-                it.calories = c.getInt(3);
-                it.protein = c.getInt(4);
-                it.carbs = c.getInt(5);
-                it.fats = c.getInt(6);
-                it.fiber = c.getInt(7);
-                it.sugars = c.getInt(8);
-                it.sodium = c.getInt(9);
-                out.add(it);
-            }
-            return out;
-        } finally {
-            c.close();
-        }
-    }
-
-    // -------------------------
-    // (3) 일자 상세: 해당 날짜의 "영양소 총합(SUM)" 조회
-    // -------------------------
+    // 일자 상세: 해당 날짜의 "영양소 총합(SUM)" 조회
     public NutritionTotals getDailyTotals(String date) {
         SQLiteDatabase db = helper.getReadableDatabase();
 
@@ -145,7 +106,7 @@ public class IntakeRepository {
         }
     }
 
-    // (4) 일자 상세: 일자에 해당하는 음식명들 반환
+    // 일자 상세: 일자에 해당하는 음식명들 반환
     public List<String> getDailyFoodNames(String date) {
         SQLiteDatabase db = helper.getReadableDatabase();
 

@@ -101,7 +101,6 @@ public class NutritionCalculator {
     }
 
     // =========================
-    // 핵심 API
     // label + inputGrams -> NutritionInfo(int)
     // =========================
     public NutritionInfo getNutrition(String label, int inputGrams) {
