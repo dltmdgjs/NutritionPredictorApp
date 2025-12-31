@@ -116,5 +116,30 @@
 
 ---
 
+## References / Open Source Licenses
+
+This project uses the following open-source libraries and frameworks.  
+Please refer to each project’s repository/license for full terms.
+
+- **MPAndroidChart** (PieChart UI) — Apache License 2.0  
+  https://github.com/PhilJay/MPAndroidChart
+
+- **Kizitonwose CalendarView** (Calendar UI) — MIT License  
+  https://github.com/kizitonwose/Calendar
+
+- **TensorFlow Lite** (On-device inference) — Apache License 2.0  
+  https://www.tensorflow.org/lite
+
+- **TensorFlow Lite Support Library** (Image processing utilities) — Apache License 2.0  
+  https://github.com/tensorflow/tflite-support
+
+- **Material Components for Android** (UI components) — Apache License 2.0  
+  https://github.com/material-components/material-components-android
+
+- **AndroidX Libraries** (AppCompat, Fragment, Lifecycle, etc.) — Apache License 2.0  
+  https://developer.android.com/jetpack/androidx
+
+---
+
 ## License
 - MIT License
