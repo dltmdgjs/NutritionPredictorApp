@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#F8F9FA"
-    android:padding="20dp">
+    android:padding="20dp"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <!-- 월 헤더: 카드 스타일로 변경 -->
     <androidx.cardview.widget.CardView

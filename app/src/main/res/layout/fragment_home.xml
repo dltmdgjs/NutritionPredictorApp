@@ -7,14 +7,18 @@
     android:layout_height="match_parent"
     android:background="#F8F9FA"
     android:fillViewport="true"
-    android:isScrollContainer="true">
+    android:isScrollContainer="true"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="24dp"
+        android:clipToPadding="false"
+        android:clipChildren="false">
 
         <!-- 1. 헤더 섹션 -->
         <TextView

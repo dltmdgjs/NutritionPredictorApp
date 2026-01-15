@@ -6,14 +6,18 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="#F8F9FA"
-    tools:context=".ui.user.UserFragment">
+    tools:context=".ui.user.UserFragment"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="24dp"
+        android:clipToPadding="false"
+        android:clipChildren="false">
 
         <!-- 1. 프로필 이미지 섹션 -->
         <FrameLayout

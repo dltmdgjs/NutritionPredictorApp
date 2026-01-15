@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:background="#F8F9FA"
+    android:clipToPadding="false"
+    android:clipChildren="false"
     tools:context=".ui.log.LogFragment">
 
     <LinearLayout
@@ -13,7 +15,9 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:padding="24dp"
+        android:clipToPadding="false"
+        android:clipChildren="false">
 
         <!-- 상단 타이틀 -->
         <TextView
