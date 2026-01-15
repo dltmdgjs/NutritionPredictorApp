@@ -153,7 +153,6 @@
                     android:layout_height="wrap_content"
                     android:lineSpacingExtra="6dp"
                     android:text="분석 결과가 여기에 표시됩니다."
-                    android:textColor="#444444"
                     android:textSize="15sp" />
 
                 <Button

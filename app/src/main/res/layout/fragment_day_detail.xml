@@ -163,7 +163,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="상세 섭취 내역"
-                    android:textColor="#333333"
+                    android:textColor="#1A1A1A"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:layout_marginBottom="12dp"/>
@@ -174,7 +174,6 @@
                     android:layout_height="wrap_content"
                     android:text="음식 정보 로딩 중..."
                     android:lineSpacingExtra="6dp"
-                    android:textColor="#666666"
                     android:textSize="15sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>

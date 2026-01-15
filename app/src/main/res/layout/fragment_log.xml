@@ -37,8 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="#FFFFFF">
+            app:cardElevation="4dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -128,15 +127,15 @@
                     android:padding="20dp">
 
                     <!-- 탄수화물 바 -->
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="탄수화물" android:textSize="12sp" android:textColor="#555"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="탄수화물" android:textSize="12sp" />
                     <ProgressBar style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:progress="60" android:progressTint="#FFA726" android:layout_marginBottom="12dp"/>
 
                     <!-- 단백질 바 -->
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="단백질" android:textSize="12sp" android:textColor="#555"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="단백질" android:textSize="12sp" />
                     <ProgressBar style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:progress="40" android:progressTint="#66BB6A" android:layout_marginBottom="12dp"/>
 
                     <!-- 지방 바 -->
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="지방" android:textSize="12sp" android:textColor="#555"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="지방" android:textSize="12sp"/>
                     <ProgressBar style="?android:attr/progressBarStyleHorizontal" android:layout_width="match_parent" android:layout_height="8dp" android:progress="30" android:progressTint="#EF5350"/>
 
                 </LinearLayout>
