@@ -26,7 +26,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 import kotlin.Unit;
 
 public class CalendarFragment extends Fragment {

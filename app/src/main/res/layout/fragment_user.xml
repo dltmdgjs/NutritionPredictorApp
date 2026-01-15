@@ -1,232 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
+    android:fillViewport="true"
+    android:background="#F8F9FA"
     tools:context=".ui.user.UserFragment">
 
-
-    <ImageView
-        android:id="@+id/iv_profile"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:src="@drawable/user" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:weightSum="10">
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <TextView
-            android:id="@+id/tv_name"
-            android:layout_width="0dp"
+        <!-- 1. 프로필 이미지 섹션 -->
+        <FrameLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="이름"
-            android:textSize="20sp" />
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="30dp">
 
-        <EditText
-            android:id="@+id/et_name"
-            android:layout_width="0dp"
+            <androidx.cardview.widget.CardView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                app:cardCornerRadius="60dp"
+                app:cardElevation="4dp">
+
+                <ImageView
+                    android:id="@+id/iv_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/user"
+                    android:background="#E0E0E0" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- 편집 아이콘 표시 (선택 사항) -->
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="bottom|end"
+                android:src="@android:drawable/ic_menu_camera"
+                android:background="@drawable/edittext_border_background"
+                android:backgroundTint="#4CAF50"
+                app:tint="#FFFFFF"
+                android:padding="6dp" />
+        </FrameLayout>
+
+        <!-- 2. 정보 입력 카드 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:ems="10"
-            android:hint="이름을 입력하세요."
-            android:inputType="text" />
-    </LinearLayout>
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:weightSum="10">
-
-        <TextView
-            android:id="@+id/tv_age"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="나이"
-            android:textSize="20sp" />
-
-        <EditText
-            android:id="@+id/et_age"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:ems="10"
-            android:hint="나이를 입력하세요."
-            android:inputType="number" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:weightSum="10">
-
-        <TextView
-            android:id="@+id/tv_height"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="키"
-            android:textSize="20sp" />
-
-        <EditText
-            android:id="@+id/et_height"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:ems="10"
-            android:hint="키를 입력하세요."
-            android:inputType="number" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:weightSum="10">
-
-        <TextView
-            android:id="@+id/tv_weight"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="몸무게"
-            android:textSize="20sp" />
-
-        <EditText
-            android:id="@+id/et_weight"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:ems="10"
-            android:hint="몸무게를 입력하세요."
-            android:inputType="number" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:weightSum="10">
-
-        <TextView
-            android:id="@+id/tv_gender"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="성별"
-            android:textSize="20sp" />
-
-        <RadioGroup
-            android:id="@+id/rg_gender"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/rb_man"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="남" />
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <RadioButton
-                android:id="@+id/rb_woman"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="여" />
-        </RadioGroup>
+                <!-- 이름 입력 -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="이름" android:textSize="13sp" android:textColor="#888" />
+                <EditText
+                    android:id="@+id/et_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:hint="이름을 입력하세요"
+                    android:inputType="text"
+                    android:background="@android:color/transparent"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="16dp" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F0F0F0" android:layout_marginBottom="16dp" />
+
+                <!-- 나이 / 키 / 몸무게 (한 줄에 배치하거나 정렬 유지) -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:weightSum="3">
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="나이" android:textSize="13sp" android:textColor="#888" />
+                        <EditText android:id="@+id/et_age" android:layout_width="match_parent" android:layout_height="48dp" android:hint="00" android:inputType="number" android:background="@android:color/transparent" />
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="키(cm)" android:textSize="13sp" android:textColor="#888" />
+                        <EditText android:id="@+id/et_height" android:layout_width="match_parent" android:layout_height="48dp" android:hint="000" android:inputType="number" android:background="@android:color/transparent" />
+                    </LinearLayout>
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="몸무게(kg)" android:textSize="13sp" android:textColor="#888" />
+                        <EditText android:id="@+id/et_weight" android:layout_width="match_parent" android:layout_height="48dp" android:hint="00" android:inputType="number" android:background="@android:color/transparent" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F0F0F0" android:layout_marginTop="8dp" android:layout_marginBottom="16dp" />
+
+                <!-- 성별 선택 -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="성별" android:textSize="13sp" android:textColor="#888" android:layout_marginBottom="8dp"/>
+                <RadioGroup
+                    android:id="@+id/rg_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="16dp">
+                    <RadioButton android:id="@+id/rb_man" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="남성" android:layout_marginRight="20dp" />
+                    <RadioButton android:id="@+id/rb_woman" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="여성" />
+                </RadioGroup>
+
+                <!-- 활동량 선택 -->
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="평소 활동량" android:textSize="13sp" android:textColor="#888" android:layout_marginBottom="8dp"/>
+                <RadioGroup
+                    android:id="@+id/rg_activity_level"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <RadioButton android:id="@+id/rb_activity_level_low" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="낮음" android:layout_marginRight="10dp" />
+                    <RadioButton android:id="@+id/rb_activity_level_medium" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="보통" android:layout_marginRight="10dp" />
+                    <RadioButton android:id="@+id/rb_activity_level_high" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="높음" />
+                </RadioGroup>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 3. 저장 버튼 -->
+        <Button
+            android:id="@+id/bt_save"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="32dp"
+            android:backgroundTint="#4CAF50"
+            android:text="정보 저장하기"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:cornerRadius="12dp" />
+
+        <!-- 하단 여백 -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="80dp" />
+
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:weightSum="10">
-
-        <TextView
-            android:id="@+id/tv_activity_level"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:text="활동량"
-            android:textSize="20sp" />
-
-        <RadioGroup
-            android:id="@+id/rg_activity_level"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="7"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/rb_activity_level_low"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="저" />
-
-            <RadioButton
-                android:id="@+id/rb_activity_level_medium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="중" />
-            <RadioButton
-                android:id="@+id/rb_activity_level_high"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="고" />
-        </RadioGroup>
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/bt_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="저장" />
-</LinearLayout>
+</ScrollView>

@@ -21,7 +21,11 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -46,6 +50,23 @@ public class HomeFragment extends Fragment {
     private NutritionCalculator calc;
     private NutritionCalculator.NutritionInfo info;
     AppDbHelper dbHelper;
+
+    // HomeFragment.java
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // 시스템 바(상단바, 하단바)의 높이를 동적으로 계산하여 패딩 적용
+        ViewCompat.setOnApplyWindowInsetsListener(binding.scrollRoot, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            // 기존 XML의 padding 대신 시스템 바 높이만큼 정확히 여백 부여
+            v.setPadding(insets.left, insets.top, insets.right, insets.bottom);
+
+            return WindowInsetsCompat.CONSUMED;
+        });
+    }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -102,6 +123,15 @@ public class HomeFragment extends Fragment {
             saveIntakeInfo();
         });
 
+        // 중량 입력란 포커스시 키보드 올라오면 스크롤 올리기
+        binding.etFweight.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {        // 키보드가 올라오는 시간을 고려해 약간의 지연 후 스크롤
+                binding.getRoot().postDelayed(() -> {
+                    binding.scrollRoot.smoothScrollTo(0, binding.etFweight.getBottom());
+                }, 300);
+            }
+        });
+
         return root;
     }
 
@@ -153,6 +183,8 @@ public class HomeFragment extends Fragment {
                                 "나트륨: " + info.sodium + "mg"
                 );
                 binding.btSave.setVisibility(View.VISIBLE);
+
+                binding.scrollRoot.post(() -> binding.scrollRoot.fullScroll(View.FOCUS_DOWN));
             }
 
         } catch (Exception e) {

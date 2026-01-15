@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="8dp"
+    android:weightSum="7">
+
+    <TextView
+        style="@style/CalendarLegendText"
+        android:text="일"
+        android:textColor="#FF5252" /> <!-- 일요일 빨간색 -->
+
+    <TextView style="@style/CalendarLegendText" android:text="월" />
+    <TextView style="@style/CalendarLegendText" android:text="화" />
+    <TextView style="@style/CalendarLegendText" android:text="수" />
+    <TextView style="@style/CalendarLegendText" android:text="목" />
+    <TextView style="@style/CalendarLegendText" android:text="금" />
+
+    <TextView
+        style="@style/CalendarLegendText"
+        android:text="토"
+        android:textColor="#448AFF" /> <!-- 토요일 파란색 -->
+
+</LinearLayout>

@@ -1,51 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-    android:layout_marginTop="50dp">
+    android:orientation="vertical"
+    android:background="#F8F9FA"
+    android:padding="20dp">
 
-    <!-- 월 헤더 -->
-    <LinearLayout
+    <!-- 월 헤더: 카드 스타일로 변경 -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp">
 
-        <Button
-            android:id="@+id/btPrev"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="이전" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="8dp">
 
-        <TextView
-            android:id="@+id/tvMonth"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:text="2025-12" />
+            <!-- 이전 달 버튼: 텍스트 대신 화살표 아이콘 추천 (없으면 텍스트 유지) -->
+            <Button
+                android:id="@+id/btPrev"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&lt;"
+                android:textSize="20sp"
+                android:textColor="#4CAF50"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btNext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="다음" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tvMonth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="2025년 12월"
+                android:textColor="#1A1A1A"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:letterSpacing="-0.02" />
 
-    <!-- CalendarView -->
-    <com.kizitonwose.calendar.view.CalendarView
-        android:id="@+id/calendarView"
+            <!-- 다음 달 버튼 -->
+            <Button
+                android:id="@+id/btNext"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="&gt;"
+                android:textSize="20sp"
+                android:textColor="#4CAF50"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 요일 표시 헤더 추가 (일 월 화 수 목 금 토) -->
+    <include
+        layout="@layout/layout_calendar_day_legend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cv_dayViewResource="@layout/item_calendar_day"
-        app:cv_daySize="square"
-        app:cv_outDateStyle="endOfGrid"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_marginBottom="8dp" />
+
+    <!-- CalendarView: 배경을 흰색 카드로 감싸기 -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp">
+
+        <com.kizitonwose.calendar.view.CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:cv_dayViewResource="@layout/item_calendar_day"
+            app:cv_daySize="square"
+            app:cv_outDateStyle="endOfGrid" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- 하단에 선택한 날짜의 요약을 보여줄 공간 (추가 스타일) -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="날짜를 선택하여 식단 기록을 확인하세요"
+        android:textColor="#999999"
+        android:textSize="14sp"
+        android:layout_gravity="center" />
+
 </LinearLayout>

@@ -18,6 +18,7 @@
         android:theme="@style/Theme.NutritionPredictorApp">
         <activity
             android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan|adjustResize"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
