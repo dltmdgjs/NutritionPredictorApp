@@ -97,7 +97,13 @@ public class LogFragment extends Fragment {
             str += "당류: " + sugars + "g\n";
             str += "나트륨: " + sodium + "mg\n";
 
+            // 천 단위 콤마 형식 생성
+            java.text.NumberFormat formatter = java.text.NumberFormat.getInstance();
+            String formattedCalories = formatter.format(calories);
 
+            binding.tvTodayCalories.setText(formattedCalories + " kcal");
+
+            // binding.tvTodayCalories.setText(calories+" kcal"); // 오늘 섭취한 칼로리
             binding.tvLoadInfo.setText(str); // 섭취한 영양 성분 정보
             binding.tvTodayFood.append(foods); // 섭취한 음식명
 
