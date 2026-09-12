@@ -6,6 +6,20 @@
 
 <img src="https://github.com/user-attachments/assets/52d256ea-45be-4a67-8c65-044bcae3c42b" width="300" height="700" />
 
+---
+### 프론트엔드 수정 (25/01/15)
+<img width="300" height="700" alt="Image" src="https://github.com/user-attachments/assets/6fee0a8b-216a-4533-9cb1-93b8f5331ca0" />
+
+<img width="300" height="700" alt="Image" src="https://github.com/user-attachments/assets/3f99abcd-3145-4c1e-85df-b0089bbcb817" />
+
+<img width="300" height="700" alt="Image" src="https://github.com/user-attachments/assets/64efb031-760d-4e25-8ec2-0b21ae988cc9" />
+
+<img width="300" height="700" alt="Image" src="https://github.com/user-attachments/assets/df8ea014-9441-4e9f-8613-136915e55ba8" />
+
+<img width="300" height="700" alt="Image" src="https://github.com/user-attachments/assets/326e2f49-bfcc-424b-885f-1019a60f7353" />
+
+---
+
 ## 1. 주요 기능
 ### 1) 음식 이미지 분류 (On-device)
 - 카메라 촬영 / 갤러리 선택 → `ImageView` 표시
